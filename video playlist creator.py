@@ -22,9 +22,9 @@ video = ImageClip(cover_img, duration=song_duration)
 
 video.with_audio(audio)
 
-video.write_videofile("Sparkle.avi", 
-                      fps=30, 
-                      codec='rawvideo',
+video.write_videofile("Sparkle.mp4", 
+                      fps=1, 
+                      codec='libx264',
                       audio_codec='libmp3lame')
 video.close()
 print("done.")
