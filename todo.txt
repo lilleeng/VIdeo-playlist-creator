@@ -1,3 +1,7 @@
--Retain audio bitrate in the video created.
-
+Short term:
+-Manage the files
 -Create video with front cover shown for 10 seconds and the back cover shown for the rest of the video
+
+Long term:
+-Retain audio bitrate in the video created.
+-Manage multiple different audio file types (not only .mp3)
