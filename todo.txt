@@ -1,3 +1,3 @@
 -Retain audio bitrate in the video created.
--Create video with an image
--Read the length of the audio file --> set 'duration' to this length
+
+-Create video with front cover shown for 10 seconds and the back cover shown for the rest of the video

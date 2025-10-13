@@ -8,23 +8,19 @@ from moviepy import *
 import numpy as np
 import os
 
-datadir = "C:\\Users\\klill\\Downloads\\Tatsuro Yamashita (For Kjetils eyes only)\\Tatsuro Yamashita (For Kjetils eyes only)\\[1982.01.21] For You (VBR)"
-cover_img = os.path.join(datadir, "Cover.jpg")
-song_name = "01. Sparkle"
-song = os.path.join(datadir, song_name + ".mp3")
-
-audio = AudioFileClip(song)
-
-song_duration = 4*60 + 14   # ideally gotten from audio
-
-video = ImageClip(cover_img, duration=song_duration)
+datadir = input("Album folder directory:\n")
+# datadir = "C:\\Users\\klill\\Downloads\\Tatsuro Yamashita (For Kjetils eyes only)\\Tatsuro Yamashita (For Kjetils eyes only)\\Tatsuro Yamashita - Rarities (2002) (FLAC)"
 
 
-video.with_audio(audio)
 
-video.write_videofile("Sparkle.mp4", 
-                      fps=1, 
-                      codec='libx264',
-                      audio_codec='libmp3lame')
+cover_img = os.path.join(datadir, "Coverr.jpg")
+song_name = "01. Sparkle.mp3"
+# song = os.path.join(datadir, song_name + ".mp3")
+
+
+
+video = ImageClip(cover_img, duration=1)
+video.write_videofile("Rarities cover and Sparkle song.mp4", 
+                      fps=1,
+                      audio=song_name)
 video.close()
-print("done.")
