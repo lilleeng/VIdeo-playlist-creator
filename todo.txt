@@ -1,7 +1,8 @@
 Short term:
--Create video with front cover shown for 10 seconds and the back cover shown for the rest of the video
+-Create function for combining front and back cover into one image
 
 Long term:
 -Segment the code into functions
 -Add option for one album video or many song videos
 -Retain audio bitrate in the video created.
+-Create function for concatenating video clips

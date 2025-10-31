@@ -4,7 +4,10 @@
 # Makes a video with the cover image and the songs
 
 from moviepy import *
-# import numpy as np
+from mutagen.mp3 import MP3
+from mutagen.oggvorbis import OggVorbis
+from mutagen.flac import FLAC
+from PIL import Image
 import os
 
 # Enter album data directory
@@ -25,7 +28,7 @@ for file in os.listdir(path=datadir):
     except:
         others.append(file)
 songs.sort()
-print('Images to be used:')
+print('\nImages to be used:')
 for img in imgs:
     print(img)
 print('\nSongs to be used:')
@@ -40,6 +43,13 @@ if proceed != '':
 
 # Enter output directory
 output_path = input('Video playlist output path: (empty is same as input path)\n')
+
+# Single video album playlist or multiple individual songs of videos
+print('\nChoose an option')
+print('1: Single long video')
+print('2: Multiple videos')
+PLAYLIST_FORM_CHOICE = input()
+
 
 # Video processing
 cover_img = os.path.join(datadir, "cover.jpg")
