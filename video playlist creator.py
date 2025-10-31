@@ -4,7 +4,7 @@
 # Makes a video with the cover image and the songs
 
 from moviepy import *
-import numpy as np
+# import numpy as np
 import os
 
 # Enter album data directory
