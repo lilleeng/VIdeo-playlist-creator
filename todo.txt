@@ -1,8 +1,15 @@
 Short term:
--Create function for combining front and back cover into one image
-
-Long term:
+-Make pydub work by installing 'ffmpeg'
 -Segment the code into functions
 -Add option for one album video or many song videos
+
+Long term:
 -Retain audio bitrate in the video created.
 -Create function for concatenating video clips
+
+
+Git commands to add all except:
+git add .
+git reset -- [FILE NAME]
+git commit -m "[MESSAGE]"
+git push

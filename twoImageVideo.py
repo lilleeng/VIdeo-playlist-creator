@@ -44,6 +44,22 @@ def make_adjusted_images(cover_path, backcover_path):
     bc_im_resized.close()
     return (cover_adjusted_path, backcover_adjusted_path)
 
+def merge_images(cover_path, backcover_path):
+    merged_image_path = os.path.join(datadir, 'cover_backcover_merged_temp.jpg')
+    c_im = Image.open(cover_path)
+    bc_im = Image.open(backcover_path)
+
+    new_im_size = find_optimal_img_size(c_im.size[0], c_im.size[1], bc_im.size[0], bc_im.size[1])
+    c_im_resized = c_im.resize(new_im_size)
+    bc_im_resized = bc_im.resize(new_im_size)
+
+    im_merged = Image.new("RGB", (new_im_size[0]*2, new_im_size[1]))
+    im_merged.paste(c_im_resized)
+    im_merged.paste(bc_im_resized, (new_im_size[0], 0))
+
+    im_merged.save(merged_image_path)
+    return merged_image_path
+
 def find_optimal_img_size(c_im_w, c_im_h, bc_im_w, bc_im_h):
     # Find "optimal" image size
     r_ = ( (c_im_w / c_im_h) + (bc_im_w / bc_im_h) ) / 2    # Average image aspect ratio
@@ -52,9 +68,9 @@ def find_optimal_img_size(c_im_w, c_im_h, bc_im_w, bc_im_h):
     b = 2 / (1+r_)      # downscale factor
     return ( round(s*a), round(s*b) )   # new image size
 
-def remove_temp_images(cover_adjusted_path, backcover_adjusted_path):
-    os.remove(cover_adjusted_path)
-    os.remove(backcover_adjusted_path)
+def remove_temp_images(paths):
+    for path in paths:
+        os.remove(path)
     
 def make_video_two_clips(cover, backcover, song):
     song_duration = get_audio_duration(song)
@@ -66,10 +82,15 @@ def make_video_two_clips(cover, backcover, song):
     cover_clip.close()
     backcover_clip.close()
     full_clip.close()
-    remove_temp_images(cap, bap)
+    remove_temp_images([cap, bap])
 
-def make_video_adjacent_imgs(cover, backcover, song):
-    song_duration = get_audio_duration(song)
+def make_video_merged_imgs(cover, backcover, song):
+    # song_duration = get_audio_duration(song)
+    merged_im_path = merge_images(cover, backcover)
+    clip = ImageClip(merged_im_path, duration=1)
+    clip.write_videofile('merged images.mp4', fps=1, audio=song)
+    clip.close()
+    remove_temp_images([merged_im_path])
 
 
 # error in CompositeVideoClip with argument clips=[backcover_clip, cover_clip] instead of clips=[cover_clip, backcover_clip]
@@ -78,6 +99,13 @@ def make_video_adjacent_imgs(cover, backcover, song):
 # solution with PILLOW: readjust sizes of images to all be the same
 
 
-make_video_two_clips(cover_path, backcover_path, song_path)
+# make_video_two_clips(cover_path, backcover_path, song_path)
+make_video_merged_imgs(cover_path, backcover_path, song_path)
 
+# c = Image.open(cover_path)
+# bc = Image.open(backcover_path)
+# print(c.mode, c.format, c.size)
+# print(bc.mode, bc.format, bc.size)
 
+# mi = Image.new("RGBA", (500, 500))
+# print(mi.mode, mi.format, mi.size)
