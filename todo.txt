@@ -1,12 +1,10 @@
 Short term:
--Add code for deleting temporary files
--Make pydub work by installing 'ffmpeg'
 -Segment the code into functions
--For single long video, print timestamps.
+-For single long video, print timestamps
 
 Long term:
--Retain audio bitrate in the video created.
--Create function for concatenating video clips
+-Retain audio bitrate in the video created
+
 
 
 Git commands to add all except:
