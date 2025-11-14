@@ -27,23 +27,43 @@ def find_optimal_img_size(c_im_w, c_im_h, bc_im_w, bc_im_h):
 
     return (w, h)   # new image size
 
-datadir = 'C:\\Users\\NintendoDS\\Music\\Tatsuro Yamashita\\Moonglow (1979)'
+datadir = 'C:\\Users\\NintendoDS\\Music\\Tatsuro Yamashita\\Come Along 3 (2017)'
+img = os.path.join(datadir, 'cover.jpg')
+img = Image.open(img)
 
-imgp = os.path.join(datadir, 'Cover.jpg')
-imge = Image.open(imgp)
-imgp2 = os.path.join(datadir, 'backcover.jpg')
-imge2 = Image.open(imgp2)
-# s = (500, 500)
-s = find_optimal_img_size(imge.size[0], imge.size[1], imge2.size[0], imge2.size[1])
-# s = (1204, 1205)    # (1203, 1201)
-print(s)
-imge = imge.resize(s)
-imge2 = imge2.resize(s)
+w = img.size[0]
+h = img.size[1]
+if w % 2 == 1:
+    if w < h:
+        w += 1
+    else:
+        w -= 1
+if h % 2 == 1:
+    if w < h:
+        h -= 1
+    else:
+        h += 1
+img = img.resize((w,h))
 
-imgn = Image.new('RGB', (s[0]*2, s[1]))
-imgn.paste(imge)
-imgn.paste(imge2, (s[0], 0))
-imgn.save('temp_img.jpg')
+img.save('temp_img.jpg')
+
+# datadir = 'C:\\Users\\NintendoDS\\Music\\Tatsuro Yamashita\\Moonglow (1979)'
+
+# imgp = os.path.join(datadir, 'Cover.jpg')
+# imge = Image.open(imgp)
+# imgp2 = os.path.join(datadir, 'backcover.jpg')
+# imge2 = Image.open(imgp2)
+# # s = (500, 500)
+# s = find_optimal_img_size(imge.size[0], imge.size[1], imge2.size[0], imge2.size[1])
+# # s = (1204, 1205)    # (1203, 1201)
+# print(s)
+# imge = imge.resize(s)
+# imge2 = imge2.resize(s)
+
+# imgn = Image.new('RGB', (s[0]*2, s[1]))
+# imgn.paste(imge)
+# imgn.paste(imge2, (s[0], 0))
+# imgn.save('temp_img.jpg')
 
 # img = os.path.join(datadir, 'cover_img_temp.jpg')
 img = 'temp_img.jpg'

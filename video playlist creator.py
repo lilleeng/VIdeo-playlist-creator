@@ -32,13 +32,11 @@ def get_content_in_path(path):
     if (len(songs) == 0):
         raise Exception("No songs found.")
     
-    print(songs)
     # sort songs
     def sorting_method(filename):
         match = re.match(r'^([\d\.]+)', filename)
         numeric_parts = tuple(int(s) for s in match.group(1).split('.') if s.isdigit())
         return numeric_parts
-    # sorted(songs, key=lambda song: int(song.split('.')[0]))
     songs = sorted(songs, key=sorting_method)
 
     return (songs, imgs, others)
@@ -112,7 +110,8 @@ datadir = input("Album folder directory:\n- ")
 songs, imgs, others = get_content_in_path(datadir)
 print_msg_and_list('\nImages to be used:', imgs.values())
 print_msg_and_list('\nSongs to be used:', songs)
-print_msg_and_list('\nFiles to be ignored:', others)
+if (len(others) != 0):
+    print_msg_and_list('\nFiles to be ignored:', others)
 
 # Single video album playlist or multiple individual songs of videos
 PLAYLIST_FORM_CHOICE = ''
@@ -142,17 +141,40 @@ if (len(imgs) == 2):
     cover_path = os.path.join(datadir, imgs['cover'])
     backcover_path = os.path.join(datadir, imgs['backcover'])
     merge_images(cover_path, backcover_path, img_path)
-else:
+elif (len(imgs) == 1):
     #use one image
     for key in imgs.keys():
         img_path = os.path.join(datadir, imgs[key])
+        new_img = Image.open(img_path)
+        w = new_img.size[0]
+        h = new_img.size[1]
+        if w % 2 == 1:
+            if w < h:
+                w += 1
+            else:
+                w -= 1
+        if h % 2 == 1:
+            if w < h:
+                h -= 1
+            else:
+                h += 1
+        new_img = new_img.resize((w,h))
+        new_img.save(img_path)
+else:
+    raise Exception(f'Found 0 or more than 2 images to be used:\n{imgs}')
 
 # Single or multiple video(s)
+full_album_video_path = ''
+full_album_audio_path = ''
 if (PLAYLIST_FORM_CHOICE == '1'):   # Single long video
     album_name = datadir.rsplit('\\', maxsplit=1)[1]
+    full_album_video_path = os.path.join(output_path, album_name + '.mp4')
+    full_album_audio_path = os.path.join(output_path, album_name + '.flac')
     full_album_audio = None
     FIRST_ITERATION = True
+    print('\nStiching audio files...')
     for song in songs:
+        print(f'+ {song} ...')
         # _, song_ext = os.path.splitext(song)
         segment = AudioSegment.from_file(os.path.join(datadir, song))
         if (FIRST_ITERATION):
@@ -161,6 +183,7 @@ if (PLAYLIST_FORM_CHOICE == '1'):   # Single long video
         else:
             full_album_audio += segment
     full_album_audio.export(os.path.join(output_path, album_name + '.flac'))
+    print('Audio file made.')
     write_video(img_path, 
                 os.path.join(output_path, album_name + '.mp4'),
                 os.path.join(output_path, album_name + '.flac'))
@@ -173,3 +196,7 @@ if (PLAYLIST_FORM_CHOICE == '2'):   # Multiple videos
                     os.path.join(datadir, song))
 
 # delete temporary files!
+if (len(imgs) == 2):
+    os.remove(img_path)
+if (PLAYLIST_FORM_CHOICE == '1'):
+    os.remove(full_album_audio_path)

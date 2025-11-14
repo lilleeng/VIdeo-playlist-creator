@@ -14,3 +14,5 @@ git add .
 git reset -- [FILE NAME]
 git commit -m "[MESSAGE]"
 git push
+
+git status
