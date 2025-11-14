@@ -1,7 +1,8 @@
 Short term:
+-Add code for deleting temporary files
 -Make pydub work by installing 'ffmpeg'
 -Segment the code into functions
--Add option for one album video or many song videos
+-For single long video, print timestamps.
 
 Long term:
 -Retain audio bitrate in the video created.

@@ -26,9 +26,14 @@
 from pydub import AudioSegment
 import os
 
-datadir = 'C:\\Users\\klill\\Music\\Tatsuro Yamashita\\[1984.xx.xx] Come Along II (VBR)'
-song1 = os.path.join(datadir, '5. Yoru no tsubasa (Nightwing).mp3')
-song2 = os.path.join(datadir, '5. Yoru no tsubasa (Nightwing).mp3')
+# datadir = 'C:\\Users\\klill\\Music\\Tatsuro Yamashita\\[1984.xx.xx] Come Along II (VBR)'
+# datadir = 'C:\\Users\\NintendoDS\\Music\\Tatsuro Yamashita\\Sonorite (2005)'
+# song1 = os.path.join(datadir, '01. Midas Touch.flac')
+# song2 = os.path.join(datadir, '04. 忘れないで.flac')
+
+datadir = 'C:\\Users\\NintendoDS\\Music\\Tatsuro Yamashita\\Moonglow (1979)'
+song1 = os.path.join(datadir, '3. Rainy Walk.mp3')
+song2 = os.path.join(datadir, '6. Hot Shot.mp3')
 
 # Create some initial audio segments (e.g., from files or silence)
 sound1 = AudioSegment.from_file(song1)
@@ -42,4 +47,4 @@ combined_sound = sound1
 combined_sound += sound2
 
 # Export the final combined sound
-combined_sound.export("final_combined_sound.flac", format="flac")
+combined_sound.export("final_combined_sound.flac")

@@ -68,7 +68,25 @@ def find_optimal_img_size(c_im_w, c_im_h, bc_im_w, bc_im_h):
     s = max( (c_im_w+c_im_h)/2, (bc_im_w+bc_im_h)/2 )   # Largest average side length
     a = (2*r_) / (1+r_) # upscale factor
     b = 2 / (1+r_)      # downscale factor
-    return ( round(s*a), round(s*b) )   # new image size
+
+    w = round(s*a)  # width
+    h = round(s*b)  # height
+
+    # Micro adjusting in case of odd numbers and in a optimal way
+    if w % 2 == 1:
+        if w < h:
+            w += 1
+        else:
+            w -= 1
+
+    if h % 2 == 1:
+        if w < h:
+            h -= 1
+        else:
+            h += 1
+
+    return (w, h)   # new image size
+
 
 def write_video(img_path, complete_output_path, complete_audio_path):
     video = ImageClip(img_path, duration=1)
@@ -135,21 +153,23 @@ if (PLAYLIST_FORM_CHOICE == '1'):   # Single long video
     full_album_audio = None
     FIRST_ITERATION = True
     for song in songs:
-        _, song_ext = os.path.splitext(song)
-        segment = AudioSegment.from_file(os.path.join(datadir, song), format=song_ext)
+        # _, song_ext = os.path.splitext(song)
+        segment = AudioSegment.from_file(os.path.join(datadir, song))
         if (FIRST_ITERATION):
             full_album_audio = segment
             FIRST_ITERATION = False
         else:
             full_album_audio += segment
-    full_album_audio.export(os.path.join(output_path, album_name + '.flac'), format='flac')
+    full_album_audio.export(os.path.join(output_path, album_name + '.flac'))
     write_video(img_path, 
                 os.path.join(output_path, album_name + '.mp4'),
                 os.path.join(output_path, album_name + '.flac'))
-
+    
 if (PLAYLIST_FORM_CHOICE == '2'):   # Multiple videos
     for song in songs:
         song_name, _ = song.rsplit('.', maxsplit=1)
         write_video(img_path, 
                     os.path.join(output_path, song_name + '.mp4'),
                     os.path.join(datadir, song))
+
+# delete temporary files!
