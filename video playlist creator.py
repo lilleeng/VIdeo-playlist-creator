@@ -14,6 +14,7 @@ import re
 
 def get_content_in_path(path):
     songs, imgs, others = [], {}, []
+
     for file in os.listdir(path=path):
         if file.lower() == 'cover.jpg':
             imgs['cover'] = file
@@ -27,6 +28,7 @@ def get_content_in_path(path):
             songs.append(file)
         except:
             others.append(file)
+            
     if (len(imgs) == 0):
         raise Exception("No cover images found.")
     if (len(songs) == 0):
@@ -60,6 +62,21 @@ def merge_images(frontcover_path, backcover_path, output_path):
 
     merged_img.save(output_path)
 
+def adjust_to_even(width, height):
+    # Micro adjusting resolution in case of odd numbers and in a optimal way
+    if width % 2 == 1:
+        if width < height:
+            width += 1
+        else:
+            width -= 1
+
+    if height % 2 == 1:
+        if width < height:
+            height -= 1
+        else:
+            height += 1
+    return (width, height)
+
 def find_optimal_img_size(c_im_w, c_im_h, bc_im_w, bc_im_h):
     # Find "optimal" image size
     r_ = ( (c_im_w / c_im_h) + (bc_im_w / bc_im_h) ) / 2    # Average image aspect ratio
@@ -69,19 +86,7 @@ def find_optimal_img_size(c_im_w, c_im_h, bc_im_w, bc_im_h):
 
     w = round(s*a)  # width
     h = round(s*b)  # height
-
-    # Micro adjusting in case of odd numbers and in a optimal way
-    if w % 2 == 1:
-        if w < h:
-            w += 1
-        else:
-            w -= 1
-
-    if h % 2 == 1:
-        if w < h:
-            h -= 1
-        else:
-            h += 1
+    w, h = adjust_to_even(w, h)
 
     return (w, h)   # new image size
 
@@ -148,16 +153,7 @@ elif (len(imgs) == 1):
         new_img = Image.open(img_path)
         w = new_img.size[0]
         h = new_img.size[1]
-        if w % 2 == 1:
-            if w < h:
-                w += 1
-            else:
-                w -= 1
-        if h % 2 == 1:
-            if w < h:
-                h -= 1
-            else:
-                h += 1
+        w, h = adjust_to_even(w, h)
         new_img = new_img.resize((w,h))
         new_img.save(img_path)
 else:
