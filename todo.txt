@@ -4,6 +4,7 @@ Short term:
 
 Long term:
 -Retain audio bitrate in the video created
+-'sida' function
 
 
 
@@ -14,3 +15,36 @@ git commit -m "[MESSAGE]"
 git push
 
 git status
+
+
+
+for getting from git repo:
+https://stackoverflow.com/questions/6335681/how-do-i-get-the-latest-version-of-my-code
+
+Case 1: Don’t care about local changes
+
+Solution 1: Get the latest code and reset the code
+    git fetch origin
+    git reset --hard origin/[tag/branch/commit-id usually: master]
+
+Solution 2: Delete the folder and clone again
+    rm -rf [project_folder]
+    git clone [remote_repo]
+
+Case 2: Care about local changes
+
+Solution 1: no conflicts with new-online version
+    git fetch origin
+    git status
+    git pull
+
+Solution 2: conflicts with new-online version
+    git fetch origin
+    git status
+    "error: Your local changes to the following files would be overwritten by merge: ..."
+    git add .       # commit local changes
+    git commit -m ‘Commit msg’
+    git add .
+    git commit -m ‘Fix conflicts’
+    git pull
+    "Already up-to-date."

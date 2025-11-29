@@ -90,7 +90,6 @@ def find_optimal_img_size(c_im_w, c_im_h, bc_im_w, bc_im_h):
 
     return (w, h)   # new image size
 
-
 def write_video(img_path, complete_output_path, complete_audio_path):
     video = ImageClip(img_path, duration=1)
     video.write_videofile(complete_output_path,
@@ -159,39 +158,79 @@ elif (len(imgs) == 1):
 else:
     raise Exception(f'Found 0 or more than 2 images to be used:\n{imgs}')
 
+
 # Single or multiple video(s)
+
+# Paths for temporary image and audio files
 full_album_video_path = ''
 full_album_audio_path = ''
+
 if (PLAYLIST_FORM_CHOICE == '1'):   # Single long video
+    # Preparing variables
     album_name = datadir.rsplit('\\', maxsplit=1)[1]
     full_album_video_path = os.path.join(output_path, album_name + '.mp4')
     full_album_audio_path = os.path.join(output_path, album_name + '.flac')
-    full_album_audio = None
-    FIRST_ITERATION = True
+    full_album_audio = AudioSegment.empty()
+    song_durations = []
+    # FIRST_ITERATION = True
+
+    # Making full album audio file
     print('\nStiching audio files...')
     for song in songs:
         print(f'+ {song} ...')
         # _, song_ext = os.path.splitext(song)
         segment = AudioSegment.from_file(os.path.join(datadir, song))
-        if (FIRST_ITERATION):
-            full_album_audio = segment
-            FIRST_ITERATION = False
-        else:
-            full_album_audio += segment
+        song_durations.append(segment.duration_seconds)
+        full_album_audio += segment
+        # if (FIRST_ITERATION):
+        #     full_album_audio = segment
+        #     FIRST_ITERATION = False
+        # else:
+        #     full_album_audio += segment
     full_album_audio.export(os.path.join(output_path, album_name + '.flac'))
     print('Audio file made.')
+
+    # Making video
     write_video(img_path, 
                 os.path.join(output_path, album_name + '.mp4'),
                 os.path.join(output_path, album_name + '.flac'))
     
+    # Printing song timestamps
+    # Format:
+    # Song name | Timestamp
+    # 01. The Theme from Big Wave | 0:00:00
+    # 02. Jody                    | 0:32:14
+    # 03. Only with You           | 1:05:32
+    # 04. Magic Ways              | 2:31:19
+    #
+    # Find max name length
+    mnl = max([len(song) for song in songs])    # max name length
+    # Find total album length
+    lts = sum(song_durations[:-1])   # last time stamp
+    # Print headers
+    print(f'\n{'Song':<{mnl}} | Timestamp')
+    # Print song name and timestamp with correct spacing
+    ts = 0
+    i = 0
+    for song in songs:
+        h = str(round(ts // 3600))
+        m = round((ts-3600*(ts//3600)) // 60)
+        m = str(m) if m >= 10 else '0' + str(m)
+        s = round(ts % 60)
+        s = str(s) if s >= 10 else '0' + str(s)
+        print(f'{song:<{mnl}} | {h}:{m}:{s}')
+        ts += song_durations[i]
+        i += 1
+
 if (PLAYLIST_FORM_CHOICE == '2'):   # Multiple videos
+    # Making videos
     for song in songs:
         song_name, _ = song.rsplit('.', maxsplit=1)
         write_video(img_path, 
                     os.path.join(output_path, song_name + '.mp4'),
                     os.path.join(datadir, song))
 
-# delete temporary files!
+# Deleting temporary files
 if (len(imgs) == 2):
     os.remove(img_path)
 if (PLAYLIST_FORM_CHOICE == '1'):
