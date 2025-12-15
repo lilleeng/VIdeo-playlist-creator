@@ -223,19 +223,19 @@ if (PLAYLIST_FORM_CHOICE == '1'):   # Single long video
     song_durations = []
     # FIRST_ITERATION = True
 
-    # Making full album audio file
+    # Making full album audio file and gathering names of songs without file extension
     print('\nStiching audio files...')
+    song_names = []
     for song in songs:
         print(f'+ {song} ...')
-        # _, song_ext = os.path.splitext(song)
+        
         segment = AudioSegment.from_file(os.path.join(datadir, song))
         song_durations.append(segment.duration_seconds)
         full_album_audio += segment
-        # if (FIRST_ITERATION):
-        #     full_album_audio = segment
-        #     FIRST_ITERATION = False
-        # else:
-        #     full_album_audio += segment
+        
+        song_name, _ = os.path.splitext(song)
+        song_names.append(song_name)
+
     full_album_audio.export(os.path.join(output_path, album_name + '.flac'))
     print('Audio file made.')
 
@@ -244,7 +244,7 @@ if (PLAYLIST_FORM_CHOICE == '1'):   # Single long video
                 os.path.join(output_path, album_name + '.mp4'),
                 os.path.join(output_path, album_name + '.flac'))
     
-    print_song_timestamps(songs, song_durations)
+    print_song_timestamps(song_names, song_durations)
 
 if (PLAYLIST_FORM_CHOICE == '2'):   # Multiple videos
     # Making videos

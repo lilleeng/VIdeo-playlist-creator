@@ -10,6 +10,14 @@ Long term:
 
 
 
+Running the py-script
+cd to source folder
+'.\.venv\Scripts\activate'
+[Set exception policy command here]
+
+
+
+
 Git commands to add all except:
 git add .
 git reset -- [FILE NAME]
