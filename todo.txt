@@ -6,6 +6,7 @@ Long term:
 -Retain audio bitrate in the video created
 -'sida' function
 -capability of taking any image file format, not just .jpg
+-capability to take songs...
 
 
 

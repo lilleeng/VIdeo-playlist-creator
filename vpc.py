@@ -97,6 +97,55 @@ def write_video(img_path, complete_output_path, complete_audio_path):
                           audio=complete_audio_path)
     video.close()
 
+def print_song_timestamps(song_names, song_lengths):
+    # Format:
+    # Timestamp | Song name
+    # 0:00:00   | 01. The Theme from Big Wave
+    # 0:32:14   | 02. Jody
+    # 1:05:32   | 03. Only with You
+    # 2:31:19   | 04. Magic Ways
+
+    # Timestamp | Song name
+    # 00:00     | 01. The Theme from Big Wave
+    # 14:14     | 02. Jody
+    # 23:32     | 03. Only with You
+    # 31:19     | 04. Magic Ways
+    
+    # Find max name length
+    mnl = max([len(song) for song in song_names])    # max name length
+
+    # Find total album length
+    # tal = sum(song_durations)   # last time stamp    # NOT NEEDED
+
+    # Check if total album length is greater than one hour
+    INCLUDE_HOUR_STAMP = sum(song_durations) >= 3600
+
+    # Print headers
+    print(f'\nTimestamp | Song')
+
+    # Print song name and timestamp with correct spacing
+    timestamp = 0
+    i = 0
+    for song in song_names:
+
+        # For calculating hour, minute, seconds, it rounds to the nearest integer.
+        # It will never round to times below 0:00:00 because the smallest value passed to
+        # the function is 0. But it could round up to a time value which is greater than
+        # the video.
+        ts = int(timestamp)
+        s = ts % 60 
+        s = str(s) if s >= 10 else '0' + str(s)
+        m = (ts - 3600*(ts//3600)) // 60
+        m = str(m) if m >= 10 else '0' + str(m)
+        
+        if INCLUDE_HOUR_STAMP:
+            h = str(ts // 3600)
+            print(f'{h+':'+m+':'+s:<{len('Timestamp')}} | {song}')
+        else:
+            print(f'{m+':'+s:<{len('Timestamp')}} | {song}')
+
+        timestamp += song_lengths[i]
+        i += 1
 
 
 ### USER INPUT ###
@@ -195,32 +244,7 @@ if (PLAYLIST_FORM_CHOICE == '1'):   # Single long video
                 os.path.join(output_path, album_name + '.mp4'),
                 os.path.join(output_path, album_name + '.flac'))
     
-    # Printing song timestamps
-    # Format:
-    # Song name | Timestamp
-    # 01. The Theme from Big Wave | 0:00:00
-    # 02. Jody                    | 0:32:14
-    # 03. Only with You           | 1:05:32
-    # 04. Magic Ways              | 2:31:19
-    #
-    # Find max name length
-    mnl = max([len(song) for song in songs])    # max name length
-    # Find total album length
-    lts = sum(song_durations[:-1])   # last time stamp
-    # Print headers
-    print(f'\n{'Song':<{mnl}} | Timestamp')
-    # Print song name and timestamp with correct spacing
-    ts = 0
-    i = 0
-    for song in songs:
-        h = str(round(ts // 3600))
-        m = round((ts-3600*(ts//3600)) // 60)
-        m = str(m) if m >= 10 else '0' + str(m)
-        s = round(ts % 60)
-        s = str(s) if s >= 10 else '0' + str(s)
-        print(f'{song:<{mnl}} | {h}:{m}:{s}')
-        ts += song_durations[i]
-        i += 1
+    print_song_timestamps(songs, song_durations)
 
 if (PLAYLIST_FORM_CHOICE == '2'):   # Multiple videos
     # Making videos
